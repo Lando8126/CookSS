@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Measurement Conversion Results</title>
+    <style>
+        body {
+            background: linear-gradient(45deg, #4a90e2, #50e3c2);
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #fff;
+            padding: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        p {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #fff;
+            max-width: 800px;
+            margin: 0 auto;
+            margin-bottom: 20px;
+        }
+        .instructions {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 40px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 60%;
+            margin: 30px auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        th {
+            background: #4a90e2;
+            color: white;
+            font-size: 1.3rem;
+        }
+        td {
+            background-color: #f2f8fc;
+        }
+        input {
+            width: 80%;
+            padding: 8px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            transition: 0.3s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            background-color: #e7f3fb;
+        }
+        button {
+            margin: 20px auto;
+            display: block;
+            padding: 10px 30px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+        button:hover {
+            background-color: #357ab7;
+        }
+    </style>
+</head>
+<body>
+    <h1>Measurement Conversion Results</h1>
+    
+    <div class="instructions">
+        <p><strong>How to Use:</strong><br>
+        1. Enter the <em>Amount</em> of the measurement you wish to convert.<br>
+        2. In the <em>Original Unit</em> box, input the unit you want to convert from (e.g., "cup", "tbsp", "tsp").<br>
+        3. In the <em>Target Unit</em> box, input the unit you want to convert to (e.g., "ml", "tbsp", "cup").<br>
+        4. Click <strong>Convert Measurements</strong> to see the results!</p>
+
+        <p><strong>Abbreviations and Units Supported:</strong><br>
+        <ul>
+            <li><strong>Length:</strong> inch (in), cm, m, km, ft, yd</li>
+            <li><strong>Volume:</strong> cup, tbsp, tsp, ml, l, oz</li>
+            <li><strong>Weight:</strong> lb, kg, g, oz</li>
+            <li><strong>Temperature:</strong> °C, °F, K</li>
+            <li><strong>Time:</strong> s (seconds), min, hr</li>
+        </ul>
+    </div>
+
+    <table id="conversionTable">
+        <tr>
+            <th>Amount</th>
+            <th>Original Unit</th>
+            <th>Target Unit</th>
+            <th>Result</th>
+        </tr>
+        <tr>
+            <td><input type="number" value="1"></td>
+            <td><input type="text" value="cup"></td>
+            <td><input type="text" value="ml"></td>
+            <td></td>
+        </tr>
+    </table>
+    
+    <button onclick="performConversion()">Convert Measurements</button>
+
+    <script>
+        function performConversion() {
+            const conversions = {
+                // Volume
+                "cup": { "ml": 240, "tbsp": 16, "tsp": 48, "oz": 8, "l": 0.24 },
+                "tbsp": { "ml": 15, "tsp": 3, "cup": 1/16, "oz": 0.5, "l": 0.015 },
+                "tsp": { "ml": 5, "tbsp": 1/3, "cup": 1/48, "oz": 0.1667, "l": 0.005 },
+                "oz": { "ml": 29.5735, "cup": 1/8, "tbsp": 2, "tsp": 6, "l": 0.0295735 },
+                "l": { "ml": 1000, "cup": 4.22675, "tbsp": 67.628, "tsp": 202.884, "oz": 33.814 },
+
+                // Weight
+                "lb": { "kg": 0.453592, "g": 453.592, "oz": 16 },
+                "kg": { "lb": 2.20462, "g": 1000, "oz": 35.274 },
+                "g": { "lb": 0.00220462, "kg": 0.001, "oz": 0.035274 },
+                "oz": { "lb": 0.0625, "kg": 0.0283495, "g": 28.3495 },
+
+                // Temperature
+                "C": { "F": (C) => C * 9/5 + 32, "K": (C) => C + 273.15 },
+                "F": { "C": (F) => (F - 32) * 5/9, "K": (F) => (F - 32) * 5/9 + 273.15 },
+                "K": { "C": (K) => K - 273.15, "F": (K) => (K - 273.15) * 9/5 + 32 },
+
+                // Length
+                "in": { "cm": 2.54, "m": 0.0254, "ft": 1/12, "yd": 1/36 },
+                "cm": { "in": 0.393701, "m": 0.01, "ft": 1/30.48, "yd": 1/91.44 },
+                "m": { "in": 39.3701, "cm": 100, "ft": 3.28084, "yd": 1.09361 },
+                "km": { "m": 1000, "cm": 100000, "ft": 3280.84, "yd": 1093.61 },
+                "ft": { "in": 12, "cm": 30.48, "m": 0.3048, "km": 0.0003048 },
+                "yd": { "in": 36, "cm": 91.44, "m": 0.9144, "km": 0.0009144 },
+
+                // Time
+                "s": { "min": 1/60, "hr": 1/3600 },
+                "min": { "s": 60, "hr": 1/60 },
+                "hr": { "s": 3600, "min": 60 }
+            };
+
+            const table = document.getElementById("conversionTable");
+            for (let i = 1; i < table.rows.length; i++) {
+                const amount = parseFloat(table.rows[i].cells[0].children[0].value) || 0;
+                const unit = table.rows[i].cells[1].children[0].value.toLowerCase();
+                const target_unit = table.rows[i].cells[2].children[0].value.toLowerCase();
+                let result = "Invalid conversion";
+
+                if (conversions[unit] && conversions[unit][target_unit]) {
+                    if (typeof conversions[unit][target_unit] === "function") {
+                        result = conversions[unit][target_unit](amount).toFixed(2);
+                    } else {
+                        result = (amount * conversions[unit][target_unit]).toFixed(2);
+                    }
+                }
+
+                table.rows[i].cells[3].innerText = result;
+            }
+        }
+    </script>
+</body>
+</html>
